@@ -17,7 +17,8 @@
     }
 
     
-    <div class="fixed z-[2000] top-[15px] right-[15px] md:top-[30px] md:right-[30px] font-['Montserrat'] transition-all duration-500" id="ui-profile">
+    <div class="fixed z-[2000] top-[15px] right-[15px] md:top-[30px] md:right-[30px] font-['Montserrat'] transition-all duration-500" id="ui-profile"
+         [ngClass]="(router.url === '/' && !isLoggedIn) ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'">
         
         
         <div id="profile-dropdown" class="absolute top-[calc(100%+15px)] right-0 bg-black/60 backdrop-blur-2xl border border-white/10 w-[290px] md:w-[320px] p-7 shadow-[0_15px_40px_rgba(0,0,0,0.6)] rounded-3xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"

@@ -1,224 +1,206 @@
-<div class="admin-glass-wrapper">
-    <header class="admin-header">
-        <div class="logo-area">
-            <h1><i class="fas fa-chess-king text-gold"></i> Panel Supremo</h1>
-        </div>
-        <div class="header-right">
-            <span>Admin: <strong>{{ adminActual?.nombre }}</strong></span>
-            <button class="btn-glass-danger" (click)="cerrarSesion()">Salir</button>
-        </div>
+<div class="pro-layout">
+  <!-- Sidebar -->
+  <aside class="pro-sidebar">
+    <div class="sidebar-brand">
+      <img src="/assets/images/museo/logo-cafe.png" alt="Logo" class="brand-logo">
+      <div class="brand-text">
+        <h2>CAFÉ AYACUCHANO</h2>
+        <span>Panel Supremo</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button [class.active]="tabActivo==='dashboard'" (click)="cambiarTab('dashboard')">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"/></svg>
+        Vista General
+      </button>
+      <button [class.active]="tabActivo==='usuarios'" (click)="cambiarTab('usuarios')">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+        Directorio Staff
+      </button>
+      <button [class.active]="tabActivo==='ventas'" (click)="cambiarTab('ventas')">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        Auditoría Ventas
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-ghost" (click)="ir('/')">Volver a Tienda</button>
+      <button class="btn-logout" (click)="cerrarSesion()">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"/></svg>
+        Desconectar
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="pro-main">
+    <header class="top-header">
+      <div class="greeting">
+        <h1>Dashboard, <span class="text-gold">{{ adminActual?.nombre?.split(' ')[0] }}</span></h1>
+        <p>Resumen gerencial y control total</p>
+      </div>
+      @if(cargando) { <div class="loader-spinner"></div> }
     </header>
 
-    <div class="admin-grid">
-        <aside class="glass-sidebar-admin">
-            <nav class="admin-nav">
-                <button [class.active]="tabActivo === 'dashboard'" (click)="cambiarTab('dashboard')"><i class="fas fa-tachometer-alt"></i> Simulador & Vista General</button>
-                <button [class.active]="tabActivo === 'usuarios'" (click)="cambiarTab('usuarios')"><i class="fas fa-users"></i> Gestión de Usuarios</button>
-                <button [class.active]="tabActivo === 'ventas'" (click)="cambiarTab('ventas')"><i class="fas fa-chart-line"></i> Reporte de Ventas</button>
-            </nav>
-        </aside>
+    @if(tabActivo==='dashboard') {
+      <div class="fade-in">
+        <div class="stats-grid mb-8">
+          <div class="stat-card">
+            <div class="icon-wrap"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></div>
+            <div class="stat-info">
+              <p>Ingresos Totales</p>
+              <h3><span class="text-gold">S/</span>{{ ingresosTotales | number:'1.2-2' }}</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="icon-wrap"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg></div>
+            <div class="stat-info">
+              <p>Órdenes Totales</p>
+              <h3>{{ ventas.length }}</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="icon-wrap"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg></div>
+            <div class="stat-info">
+              <p>Miembros Staff</p>
+              <h3>{{ usuarios.length }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
 
-        <main class="glass-main-content">
-            @if (tabActivo === 'dashboard') {
-                    <section class="fade-in">
-                        <h2 class="section-title"><i class="fas fa-random"></i> Simulador de Vistas</h2>
-                        <div class="god-mode-grid">
-                            <div class="nav-card glass-card clickable" (click)="ir('/')">
-                                <i class="fas fa-store icon-large text-verde"></i>
-                                <h3>Tienda Pública</h3>
-                                <p>Ver catálogo y hablar con Moka</p>
-                            </div>
-                            <div class="nav-card glass-card clickable" (click)="ir('/empleado/dashboard')">
-                                <i class="fas fa-boxes icon-large text-terracota"></i>
-                                <h3>Panel de Empleado</h3>
-                                <p>Aprobar órdenes y stock</p>
-                            </div>
-                            <div class="nav-card glass-card clickable" (click)="ir('/cliente/perfil')">
-                                <i class="fas fa-user-circle icon-large text-gold"></i>
-                                <h3>Mi Perfil Cliente</h3>
-                                <p>Ver mi propia fidelidad</p>
-                            </div>
-                        </div>
+    @if(tabActivo==='usuarios') {
+      <div class="content-panel fade-in">
+        <div class="panel-header flex-between">
+          <h3>Directorio Staff</h3>
+          <div class="search-box w-auto">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+            <input placeholder="Buscar por nombre..." [(ngModel)]="terminoBusquedaUsuario" (input)="filtrarUsuarios()">
+          </div>
+        </div>
 
-                        <h2 class="section-title mt-40"><i class="fas fa-chart-pie"></i> Resumen Rápido</h2>
-                        <div class="stats-grid">
-                            <div class="glass-card stat-box">
-                                <p>Ingresos Netos</p>
-                                <h2>S/ {{ ingresosTotales | number:'1.2-2' }}</h2>
-                            </div>
-                            <div class="glass-card stat-box">
-                                <p>Órdenes Completadas</p>
-                                <h2>{{ ventas.length }}</h2>
-                            </div>
-                            <div class="glass-card stat-box">
-                                <p>Usuarios Registrados</p>
-                                <h2>{{ usuarios.length }}</h2>
-                            </div>
-                        </div>
-                    </section>
-                }
+        <div class="custom-table-wrap mt-8">
+          <table class="pro-table">
+            <thead><tr><th>Identidad</th><th>Email</th><th>Rol Actual</th><th>Acciones de Seguridad</th></tr></thead>
+            <tbody>
+              @for(u of usuariosFiltrados; track u.id_usuario) {
+                <tr>
+                  <td>
+                    <div class="user-info">
+                      <div class="avatar">{{ u.nombre.charAt(0) | uppercase }}</div>
+                      <div>
+                        <strong>{{ u.nombre }}</strong>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-muted">{{ u.email }}</td>
+                  <td>
+                    <select class="pro-select" [value]="u.rol" (change)="cambiarRol(u.id_usuario, $event)">
+                      <option value="cliente">Cliente</option>
+                      <option value="empleado">Staff</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="action-btn" (click)="resetearRuleta(u.id_usuario)" title="Reiniciar cupones">
+                      <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                      Reset Ruleta
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4" class="text-center py-10">No hay usuarios con ese nombre.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
 
-                @if (tabActivo === 'usuarios') {
-                    <section class="fade-in">
-                        <div class="flex-between mb-20">
-                            <h2 class="section-title m-0"><i class="fas fa-users-cog"></i> Control de Cuentas</h2>
-                            <div class="search-box" style="margin: 0; min-width: 300px;">
-                                <i class="fas fa-search"></i>
-                                <input type="text" placeholder="Buscar por nombre o correo exacto..." class="glass-input" 
-                                       [(ngModel)]="terminoBusquedaUsuario" (input)="filtrarUsuarios()" style="margin:0;">
-                            </div>
-                        </div>
-                        
-                        <div class="glass-table-wrapper">
-                            <table class="glass-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Cliente</th>
-                                        <th>Rol</th>
-                                        <th>Visitas</th>
-                                        <th style="text-align: right;">Acciones Protegidas</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for (user of usuariosFiltrados; track user.id_usuario) {
-                                        <tr>
-                                            <td><strong>#{{ user.id_usuario }}</strong></td>
-                                            <td>
-                                                <div style="font-weight: bold;">{{ user.nombre }}</div>
-                                                <small style="color: rgba(255,255,255,0.5);">{{ ofuscarEmail(user.email) }}</small>
-                                            </td>
-                                            <td>
-                                                <select class="glass-select-small" [value]="user.rol" (change)="cambiarRol(user.id_usuario, $event)">
-                                                    <option value="cliente" style="color: black;">Cliente</option>
-                                                    <option value="empleado" style="color: black;">Empleado</option>
-                                                    <option value="admin" style="color: black;">Admin</option>
-                                                </select>
-                                            </td>
-                                            <td><span class="badge-visitas">{{ user.visitas_presenciales }}</span></td>
-                                            <td style="text-align: right;">
-                                                <button class="btn-action-glass text-gold" (click)="resetearRuleta(user.id_usuario)" title="Requiere Contraseña">
-                                                    <i class="fas fa-dharmachakra"></i> Reset Ruleta
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
-                                    @if(usuariosFiltrados.length === 0) {
-                                        <tr><td colspan="5" style="text-align: center; padding: 20px;">No se encontraron usuarios.</td></tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                }
+    @if(tabActivo==='ventas') {
+      <div class="content-panel fade-in">
+        <div class="panel-header flex-between">
+          <h3>Auditoría de Transacciones</h3>
+          <select class="pro-select w-auto" [(ngModel)]="filtroTiempoVentas" (change)="aplicarFiltrosVentas()">
+            <option value="todos">Historial Completo</option>
+            <option value="dia">Últimas 24 Hrs</option>
+            <option value="semana">Últimos 7 Días</option>
+            <option value="mes">Último Mes</option>
+          </select>
+        </div>
 
-                @if (tabActivo === 'ventas') {
-                    <section class="fade-in">
-                        <div class="flex-between mb-20">
-                            <h2 class="section-title m-0"><i class="fas fa-receipt"></i> Historial de Ventas Completadas</h2>
-                            <select class="glass-input" style="margin: 0; width: 200px;" [(ngModel)]="filtroTiempoVentas" (change)="aplicarFiltrosVentas()">
-                                <option value="todos" style="color: black;">Histórico Total</option>
-                                <option value="mes" style="color: black;">Últimos 30 días</option>
-                                <option value="semana" style="color: black;">Últimos 7 días</option>
-                                <option value="dia" style="color: black;">Hoy</option>
-                            </select>
-                        </div>
-
-                        <div class="grid-2 mb-20">
-                            <div class="glass-card">
-                                <h3><i class="fas fa-user-tie text-gold"></i> Desempeño de Empleados</h3>
-                                <hr style="border-color: rgba(255,255,255,0.1);">
-                                @for (emp of statsEmpleados; track emp.nombre) {
-                                    <div class="flex-between mb-10">
-                                        <span>{{ emp.nombre }}</span>
-                                        <strong>{{ emp.total_ventas }} órdenes (S/ {{ emp.ingresos | number:'1.2-2' }})</strong>
-                                    </div>
-                                }
-                                @if(statsEmpleados.length === 0) { <p class="text-muted">No hay datos en este periodo.</p> }
-                            </div>
-                            
-                            <div class="glass-card">
-                                <h3><i class="fas fa-leaf text-verde"></i> Top 5 Productos</h3>
-                                <hr style="border-color: rgba(255,255,255,0.1);">
-                                @for (prod of statsProductos; track prod.nombre) {
-                                    <div class="flex-between mb-10">
-                                        <span>{{ prod.nombre }}</span>
-                                        <span class="badge-comprobante" style="background: rgba(163, 177, 138, 0.2);">{{ prod.cantidad }} unds</span>
-                                    </div>
-                                }
-                                @if(statsProductos.length === 0) { <p class="text-muted">No hay datos en este periodo.</p> }
-                            </div>
-                        </div>
-
-                        <div class="glass-table-wrapper">
-                            <table class="glass-table">
-                                <thead>
-                                    <tr>
-                                        <th>Orden</th>
-                                        <th>Fecha de Entrega</th>
-                                        <th>Cliente</th>
-                                        <th>Atendido por</th>
-                                        <th style="text-align: center;">Comprobante</th>
-                                        <th style="text-align: right;">Monto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for (venta of ventasFiltradas; track venta.id_reserva) {
-                                        <tr>
-                                            <td><strong>#{{ venta.id_reserva }}</strong></td>
-                                            <td>{{ venta.fecha_reserva | date:'short' }}</td>
-                                            <td>{{ venta.cliente || 'Usuario Eliminado' }}</td>
-                                            <td><span style="font-size: 0.85rem; color: #ccc;"><i class="fas fa-headset"></i> {{ venta.empleado_nombre || 'Web' }}</span></td>
-                                            
-                                            <td style="text-align: center;">
-                                                @if (venta.comprobante_pago || venta.comprobante) {
-                                                    <button class="btn-action-glass text-gold" style="font-size: 0.8rem; padding: 5px 10px;" (click)="verComprobante(venta.comprobante_pago || venta.comprobante)">
-                                                        <i class="fas fa-image"></i> Ver Pago
-                                                    </button>
-                                                } @else {
-                                                    <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">Sin captura</span>
-                                                }
-                                            </td>
-
-                                            <td style="text-align: right; font-weight: bold; color: #A3B18A;">S/ {{ venta.total_pagado | number:'1.2-2' }}</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                }
-        </main>
-    </div>
+        <div class="custom-table-wrap mt-8">
+          <table class="pro-table">
+            <thead><tr><th># Venta</th><th>Fecha Operación</th><th>Atendido Por</th><th>Total S/</th><th>Verificar Pago</th></tr></thead>
+            <tbody>
+              @for(v of ventasFiltradas; track v.id_reserva) {
+                <tr>
+                  <td class="font-black">ORD-{{ v.id_reserva | number:'3.0' }}</td>
+                  <td class="text-muted">{{ (v.fechaPedido || v.fecha_reserva) | date:'medium' }}</td>
+                  <td><span class="badge">{{ v.empleadoAtencion?.nombre || v.empleado_nombre || 'Online' }}</span></td>
+                  <td class="text-gold font-xl font-black">S/ {{ v.total_pagado | number:'1.2-2' }}</td>
+                  <td>
+                    @if(v.comprobante_pago || v.comprobante) {
+                      <button class="action-btn" (click)="verComprobante(v.comprobante_pago || v.comprobante)">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+                        Voucher
+                      </button>
+                    } @else {
+                      <span class="text-muted text-sm">Sin evidencia</span>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="text-center py-10">No hay ventas registradas.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </main>
 </div>
 
-@if (modalSeguridadAbierto) {
-    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center;" (click)="cerrarModalSeguridad()">
-        <div class="glass-card" style="width: 100%; max-width: 400px; text-align: center; padding: 30px;" (click)="$event.stopPropagation()">
-            <h2 style="color: #FFE066; margin-top: 0; margin-bottom: 10px;"><i class="fas fa-shield-alt"></i> Seguridad</h2>
-            <p style="color: rgba(255,255,255,0.7); margin-bottom: 25px; font-size: 0.95rem;">Ingresa tu contraseña de administrador para autorizar esta acción:</p>
-            
-            <input type="password" class="glass-input" placeholder="Tu contraseña oculta..." style="text-align: center; font-size: 1.2rem; letter-spacing: 3px;" [(ngModel)]="passwordConfirmacion" (keyup.enter)="confirmarAccionSegura()">
-            
-            <div style="display: flex; gap: 15px; margin-top: 25px;">
-                <button class="btn-glass-danger" style="flex: 1; padding: 12px; border-radius: 8px;" (click)="cerrarModalSeguridad()">Cancelar</button>
-                <button class="btn-action-glass text-gold" style="flex: 1; padding: 12px; border-radius: 8px; justify-content: center;" (click)="confirmarAccionSegura()">
-                    <i class="fas fa-check"></i> Autorizar
-                </button>
-            </div>
-        </div>
+<!-- Modal Autorización -->
+@if(modalSeguridadAbierto) {
+  <div class="modal-backdrop fade-in" (click)="cerrarModalSeguridad()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+      </div>
+      <h3>Autorización Especial Requerida</h3>
+      <p>Ingresa tu clave maestra de Administrador para confirmar esta acción sensible en el sistema.</p>
+      
+      <div class="modal-form" style="margin-bottom: 2rem;">
+        <input type="password" class="pro-input" [(ngModel)]="passwordConfirmacion" placeholder="••••••••" (keyup.enter)="confirmarAccionSegura()">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost" (click)="cerrarModalSeguridad()">Abortar</button>
+        <button class="btn-primary" (click)="confirmarAccionSegura()">Autorizar Comando</button>
+      </div>
     </div>
+  </div>
 }
 
-@if (modalImagenAbierto) {
-    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center;" (click)="cerrarModalImagen()">
-        <div class="glass-card" style="position: relative; max-width: 600px; text-align: center; padding: 20px;" (click)="$event.stopPropagation()">
-            <button style="position: absolute; top: -15px; right: -15px; width: 40px; height: 40px; border-radius: 50%; background: #ff6b6b; color: white; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5);" (click)="cerrarModalImagen()">&times;</button>
-            
-            <h3 style="color: #A3B18A; margin-top: 0; margin-bottom: 15px;"><i class="fas fa-file-invoice-dollar"></i> Captura del Cliente</h3>
-            <img [src]="imagenSeleccionada" alt="Comprobante" style="max-width: 100%; max-height: 75vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        </div>
+<!-- Image Viewer Modal -->
+@if(modalImagenAbierto) {
+  <div class="modal-backdrop fade-in" (click)="cerrarModalImagen()">
+    <div class="modal-box" style="max-width: 800px; padding: 1rem;" (click)="$event.stopPropagation()">
+      <div class="flex-between mb-4 px-4 pt-4">
+        <h3 class="m-0">Voucher Adjunto</h3>
+        <button class="btn-ghost" style="padding: 0.5rem;" (click)="cerrarModalImagen()">Cerrar</button>
+      </div>
+      <img [src]="imagenSeleccionada" alt="Voucher" style="max-width: 100%; max-height: 70vh; border-radius: 12px; object-fit: contain;">
     </div>
-} 
+  </div>
+}
 
-@if (toastMsg) { <div class="toast-notification">{{ toastMsg }}</div>}
+@if(toastMsg) {
+  <div class="pro-toast fade-in">
+    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    {{ toastMsg }}
+  </div>
+}

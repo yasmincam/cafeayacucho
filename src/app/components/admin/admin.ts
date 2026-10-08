@@ -18,6 +18,7 @@ export class AdminPanel implements OnInit {
 
   adminActual: any = null;
   cargando: boolean = true;
+  // Trigger VSCode Language Server refresh
   tabActivo: string = 'dashboard';
   toastMsg: string = '';
 

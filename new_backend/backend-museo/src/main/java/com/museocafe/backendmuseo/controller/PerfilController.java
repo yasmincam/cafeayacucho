@@ -26,11 +26,13 @@ public class PerfilController {
     private final UsuarioRepository usuarioRepository;
     private final PedidoRepository pedidoRepository;
     private final CuponRepository cuponRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    public PerfilController(UsuarioRepository usuarioRepository, PedidoRepository pedidoRepository, CuponRepository cuponRepository) {
+    public PerfilController(UsuarioRepository usuarioRepository, PedidoRepository pedidoRepository, CuponRepository cuponRepository, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.pedidoRepository = pedidoRepository;
         this.cuponRepository = cuponRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/cargar/{idUsuario}")
@@ -85,5 +87,46 @@ public class PerfilController {
         respuesta.put("cupones", cuponRepository.findByUsuarioIdUsuario(idUsuario));
 
         return ResponseEntity.ok(respuesta);
+    }
+
+    @PostMapping("/actualizar")
+    public ResponseEntity<?> actualizarPerfil(@RequestBody Map<String, Object> payload) {
+        Long idUsuario = Long.valueOf(payload.get("id_usuario").toString());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
+
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "mensaje", "Usuario no encontrado"));
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        
+        if (payload.containsKey("nombre")) usuario.setNombre(payload.get("nombre").toString());
+        if (payload.containsKey("email")) usuario.setEmail(payload.get("email").toString());
+        if (payload.containsKey("dni")) usuario.setDni(payload.get("dni").toString());
+        if (payload.containsKey("telefono")) usuario.setTelefono(payload.get("telefono").toString());
+
+        if (payload.containsKey("password") && payload.get("password") != null && !payload.get("password").toString().isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(payload.get("password").toString()));
+        }
+
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok(Map.of("success", true, "mensaje", "Perfil actualizado con éxito"));
+    }
+
+    @PostMapping("/eliminar")
+    public ResponseEntity<?> eliminarCuenta(@RequestBody Map<String, Object> payload) {
+        Long idUsuario = Long.valueOf(payload.get("id_usuario").toString());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
+
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "mensaje", "Usuario no encontrado"));
+        }
+
+        // Aquí deberías manejar la eliminación de dependencias si las hay o usar CascadeType.ALL en la entidad.
+        // Por ahora eliminamos al usuario directamente.
+        usuarioRepository.delete(usuarioOpt.get());
+
+        return ResponseEntity.ok(Map.of("success", true, "mensaje", "Cuenta eliminada con éxito"));
     }
 }

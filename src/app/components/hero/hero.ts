@@ -26,7 +26,7 @@ export class Hero implements AfterViewInit {
     if (this.isLoggedIn) {
       gsap.set("#mask-container, #logo-blanco-overlay", { "--mask-size": "4000vmax" });
       gsap.set("#logo-blanco-overlay", { opacity: 0 });
-      gsap.set("#hero-ui", { opacity: 1, pointerEvents: "auto" });
+      gsap.set("#hero-ui, #main-nav, #ui-profile", { opacity: 1, pointerEvents: "auto" });
     } else {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -49,7 +49,7 @@ export class Hero implements AfterViewInit {
         ease: "power1.out"
       }, 0)
       
-      .to("#hero-ui", {
+      .to("#hero-ui, #main-nav, #ui-profile", {
         opacity: 1,
         pointerEvents: "auto",
         duration: 0.5

@@ -1,6 +1,7 @@
 package com.museocafe.backendmuseo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class Usuario {
     private String email;
 
     // SEGURIDAD: Evita que la contraseña se serialice en las respuestas JSON hacia Angular
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 

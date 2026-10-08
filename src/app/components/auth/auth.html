@@ -26,7 +26,7 @@
                 <h2 class="text-4xl md:text-5xl font-black uppercase tracking-[-1.5px] mb-3 leading-none text-[#1A1512]">
                     @if (isRecuperarMode) { RECUPERAR<br>ACCESO }
                     @else if (isLoginMode) { BIENVENIDO<br>AL OASIS }
-                    @else { ÚNETE AL<br>MUSEO }
+                    @else { ÚNETE A<br>CAFÉ AYACUCHANO }
                 </h2>
                 <p class="text-[#2C241B]/60 font-medium text-sm">
                     @if (isRecuperarMode) { Te ayudaremos a crear una nueva contraseña. }
@@ -139,7 +139,7 @@
                         @if (isRecuperarMode) {
                             {{ pasoRecuperacion === 1 ? 'Enviar Código' : 'Cambiar Contraseña' }}
                         } @else {
-                            {{ isLoginMode ? 'Entrar al museo' : 'Crear mi cuenta' }}
+                            {{ isLoginMode ? 'Entrar al Café' : 'Crear mi cuenta' }}
                         }
                     }
                 </button>
@@ -150,7 +150,7 @@
                     <span>¿Recordaste tu contraseña? </span>
                     <button type="button" class="bg-transparent border-none text-[#1A1512] font-black cursor-pointer hover:text-[#8B5E3C] transition-colors p-0 ml-1 uppercase" (click)="volverLogin()">Inicia Sesión</button>
                 } @else {
-                    <span>{{ isLoginMode ? '¿No tienes cuenta?' : '¿Ya eres parte del museo?' }}</span>
+                    <span>{{ isLoginMode ? '¿No tienes cuenta?' : '¿Ya eres parte de Café Ayacuchano?' }}</span>
                     <button type="button" class="bg-transparent border-none text-[#1A1512] font-black cursor-pointer hover:text-[#8B5E3C] transition-colors p-0 ml-1 uppercase underline decoration-2 underline-offset-4" (click)="toggleMode()">
                         {{ isLoginMode ? 'Regístrate' : 'Inicia Sesión' }}
                     </button>

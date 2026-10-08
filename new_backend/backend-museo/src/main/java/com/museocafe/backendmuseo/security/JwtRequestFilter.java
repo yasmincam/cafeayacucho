@@ -26,36 +26,41 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        try {
+            final String authorizationHeader = request.getHeader("Authorization");
 
-        String email = null;
-        String jwt = null;
-        String rol = null;
+            String email = null;
+            String jwt = null;
+            String rol = null;
 
-        // 1. Verificamos si la petición trae el Token en la cabecera
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            try {
-                // Extraemos los datos del token usando la llave secreta
-                Claims claims = jwtUtil.extractAllClaims(jwt);
-                email = claims.getSubject();
-                rol = claims.get("rol", String.class);
-            } catch (Exception e) {
-                System.out.println("Token inválido o expirado: " + e.getMessage());
+            // 1. Verificamos si la petición trae el Token en la cabecera
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                jwt = authorizationHeader.substring(7);
+                try {
+                    // Extraemos los datos del token usando la llave secreta
+                    Claims claims = jwtUtil.extractAllClaims(jwt);
+                    email = claims.getSubject();
+                    rol = claims.get("rol", String.class);
+                } catch (Exception e) {
+                    System.out.println("Token inválido o expirado: " + e.getMessage());
+                }
             }
-        }
 
-        // 2. Si el token es válido y el usuario aún no está autenticado en este hilo
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            
-            // Le decimos a Spring Security qué rol tiene este usuario
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(rol);
-            
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    email, null, Collections.singletonList(authority));
+            // 2. Si el token es válido y el usuario aún no está autenticado en este hilo
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                
+                // Le decimos a Spring Security qué rol tiene este usuario
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(rol);
+                
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        email, null, Collections.singletonList(authority));
 
-            // Guardamos la sesión en el contexto de seguridad
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                // Guardamos la sesión en el contexto de seguridad
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (Exception e) {
+            System.err.println("Error crítico en JwtRequestFilter: " + e.getMessage());
+            e.printStackTrace();
         }
 
         // 3. Continuamos con el flujo normal de la petición hacia el Controlador

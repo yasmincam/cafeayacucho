@@ -1,225 +1,155 @@
-<div class="perfil-glass-wrapper">
-    <header class="perfil-header">
-        <h1>Cactus Museum</h1>
-        <div class="header-actions">
-            @if (rolUsuario === 'empleado') {
-                <button class="btn-glass-outline" (click)="irPanelEmpleado()"><i class="fas fa-boxes"></i> Panel Empleado</button>
-            } @else if (rolUsuario === 'admin') {
-                <button class="btn-glass-outline" (click)="irPanelAdmin()"><i class="fas fa-user-shield"></i> Panel Supremo</button>
-            } @else {
-                <button class="btn-glass-outline" (click)="irTienda()"><i class="fas fa-store"></i> Tienda</button>
-            }
-            <button class="btn-glass-danger" (click)="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+<div class="consumer-wrap">
+  <div class="profile-container">
+    
+    <!-- Cabecera del Perfil (Estilo e-commerce) -->
+    <header class="profile-header fade-in">
+      <button class="btn-back" (click)="irTienda()">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+        Tienda
+      </button>
+
+      <div class="header-content">
+        <div class="avatar-ring">
+          <div class="avatar-circle">
+            {{ (usuario?.nombre?.charAt(0) || 'M') | uppercase }}
+          </div>
         </div>
+        <div class="user-details">
+          <h1>{{ usuario?.nombre }}</h1>
+          <span class="level-badge">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            SOCIO NIVEL {{ usuario?.datos_nivel?.nivel || 0 }}
+          </span>
+          <p class="user-email">{{ usuario?.email }}</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        @if(rolUsuario !== 'cliente') {
+          <button class="btn-staff" (click)="irPanel()">Mi Panel Staff</button>
+        }
+        <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </div>
     </header>
 
-    @if (cargando && !usuario.nombre) {
-        <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Cargando tu información...</div>
-    } @else {
-        <div class="perfil-grid">
-            <aside class="glass-sidebar-perfil">
-                <div class="user-avatar-box">
-                    <div class="avatar-circle"><i class="fas fa-user"></i></div>
-                    <h3>{{ usuario.nombre }}</h3>
-                    
-                    @if (rolUsuario !== 'empleado') {
-                        <div class="badge-nivel-glass" [ngClass]="'lvl-' + usuario.datos_nivel?.nivel">
-                            Socio Nivel {{ usuario.datos_nivel?.nivel }}
-                        </div>
-                        <p class="visitas-text"><i class="fas fa-mug-hot"></i> Visitas presenciales: {{ usuario.visitas_presenciales }}</p>
-                    } @else {
-                        <div class="badge-nivel-glass" style="background: rgba(255,255,255,0.2); color: white;">
-                            <i class="fas fa-briefcase"></i> Cuenta de Equipo
-                        </div>
-                    }
+    <!-- Navegación de Pestañas -->
+    <nav class="profile-tabs fade-in">
+      <button [class.active]="tab==='resumen'" (click)="tab='resumen'">Mi Fidelidad</button>
+      <button [class.active]="tab==='historial'" (click)="tab='historial'">Mis Compras</button>
+      <button [class.active]="tab==='ajustes'" (click)="tab='ajustes'">Ajustes de Cuenta</button>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="profile-content">
+      @if(cargando) { <div class="loader-spinner"></div> }
+
+      @if(tab==='resumen' && !cargando) {
+        <div class="fade-in">
+          <!-- Tarjeta de Progreso -->
+          <div class="gold-card mb-6">
+            <div class="flex-between mb-4">
+              <h3>Progreso del Club</h3>
+              <span class="discount-badge">{{ usuario?.datos_nivel?.pctActual || 0 }}% DSCTO.</span>
+            </div>
+            <p class="text-sm mb-4">{{ usuario?.datos_nivel?.textoNext }}</p>
+            
+            <div class="progress-bar-wrap mb-2">
+              <div class="progress-fill" [style.width.%]="usuario?.datos_nivel?.progreso || 0"></div>
+            </div>
+            <div class="flex-between text-xs font-black tracking-widest">
+              <span>{{ usuario?.datos_nivel?.visitasNivelActual }} VISITAS ACTUALES</span>
+              <span>META: {{ usuario?.datos_nivel?.metaNivel }}</span>
+            </div>
+          </div>
+
+          <!-- Cupones -->
+          @if(cupones.length > 0) {
+            <h3 class="section-title">Tus Cupones Disponibles</h3>
+            <div class="coupons-grid">
+              @for(c of cupones; track c.codigo_cupon) {
+                <div class="coupon-ticket">
+                  <div class="coupon-left">
+                    <h2>{{ c.descuento_pct }}%</h2>
+                    <span>OFF</span>
+                  </div>
+                  <div class="coupon-right">
+                    <h4>{{ c.codigo_cupon }}</h4>
+                    <p>Válido hasta: {{ c.fecha_expiracion | date:'dd MMM yyyy' }}</p>
+                  </div>
                 </div>
-
-                <nav class="perfil-nav">
-                    @if (rolUsuario !== 'empleado') {
-                        <button [class.active]="tabActivo === 'socio'" (click)="cambiarTab('socio')"><i class="fas fa-star"></i> Nivel y Beneficios</button>
-                    }
-                    <button [class.active]="tabActivo === 'info'" (click)="cambiarTab('info')"><i class="fas fa-id-card"></i> Configuración</button>
-                    @if (rolUsuario !== 'empleado') {
-                        <button [class.active]="tabActivo === 'reservas'" (click)="cambiarTab('reservas')"><i class="fas fa-shopping-basket"></i> Mis Compras</button>
-                        <button [class.active]="tabActivo === 'cupones'" (click)="cambiarTab('cupones')"><i class="fas fa-ticket-alt"></i> Mis Premios</button>
-                        <button [class.active]="tabActivo === 'peligro'" (click)="cambiarTab('peligro')" class="text-danger"><i class="fas fa-exclamation-triangle"></i> Peligro</button>
-                    }
-                </nav>
-            </aside>
-
-            <main class="glass-main-content">
-                
-                @if (tabActivo === 'socio') {
-                    <section class="fade-in">
-                        <h2 class="section-title"><i class="fas fa-star"></i> Tu Estado de Socio</h2>
-                        
-                        <div class="glass-card mb-20">
-                            <div class="flex-between">
-                                <div>
-                                    <h3 class="text-terracota m-0"><i class="fas fa-map-marker-alt"></i> Progreso a {{ usuario.datos_nivel?.textoNext }}</h3>
-                                    <p class="text-muted">Visita la cafetería para subir de nivel. (No es acumulativo)</p>
-                                </div>
-                                <div class="progress-text">{{ usuario.datos_nivel?.visitasNivelActual }} / {{ usuario.datos_nivel?.metaNivel }}</div>
-                            </div>
-                            
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill fill-terracota" [style.width]="usuario.datos_nivel?.progreso + '%'"></div>
-                            </div>
-                            
-                            <div class="beneficios-box mt-15">
-                                <strong><i class="fas fa-gift text-gold"></i> Beneficios Actuales:</strong>
-                                <p style="margin-top: 5px;">{{ usuario.datos_nivel?.beneficios }}</p>
-                            </div>
-                        </div>
-
-                        <div class="glass-card">
-                            <h3 class="text-verde m-0"><i class="fas fa-seedling"></i> Progreso de Adopción</h3>
-                            <p class="text-muted">Cada 4 plantas desbloqueas un premio según tu nivel.</p>
-                            
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill fill-verde" [style.width]="usuario.progreso_plantas + '%'"></div>
-                            </div>
-                            <p class="progress-text right">{{ usuario.plantas_acumuladas }} de 4 plantas</p>
-                        </div>
-                    </section>
-                }
-
-                @if (tabActivo === 'info') {
-                    <section class="fade-in">
-                        <h2 class="section-title"><i class="fas fa-cog"></i> Configuración de Cuenta</h2>
-                        <div class="glass-card form-container">
-                            <div class="form-group">
-                                <label>Nombre Completo</label>
-                                <input type="text" class="glass-input" [(ngModel)]="editNombre">
-                            </div>
-                            <div class="form-group">
-                                <label>Correo Electrónico</label>
-                                <input type="email" class="glass-input" [(ngModel)]="editEmail" [disabled]="rolUsuario === 'empleado'" [title]="rolUsuario === 'empleado' ? 'Correos de equipo no se pueden cambiar aquí.' : ''">
-                            </div>
-                            <div class="grid-2">
-                                <div class="form-group">
-                                    <label>DNI</label>
-                                    <input type="text" class="glass-input" [(ngModel)]="editDni" placeholder="Tu DNI (Opcional)">
-                                </div>
-                                <div class="form-group">
-                                    <label>Celular / WhatsApp</label>
-                                    <input type="text" class="glass-input" [(ngModel)]="editTelefono" placeholder="Para coordinaciones">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Nueva Contraseña <small>(Deja en blanco si no quieres cambiarla)</small></label>
-                                <input type="password" class="glass-input" [(ngModel)]="editPass" placeholder="••••••••">
-                            </div>
-                            <button class="btn-glass-solid mt-15" (click)="actualizarPerfil()" [disabled]="cargando">
-                                <i class="fas fa-save"></i> {{ cargando ? 'Guardando...' : 'Guardar Cambios' }}
-                            </button>
-                        </div>
-                    </section>
-                }
-
-                @if (tabActivo === 'reservas') {
-                    <section class="fade-in">
-                        <h2 class="section-title"><i class="fas fa-shopping-basket"></i> Historial de Compras</h2>
-                        
-                        @if (historial.length === 0) {
-                            <div class="empty-glass-state">
-                                <i class="fas fa-box-open"></i>
-                                <p>Aún no has adoptado ningún cactus.</p>
-                                <button class="btn-glass-outline mt-15" (click)="irTienda()">Ir a la Tienda</button>
-                            </div>
-                        } @else {
-                            <div class="orders-list">
-                                @for (reserva of historial; track reserva.id_reserva) {
-                                    <div class="glass-order-card" [class.expanded]="ordenesExpandidas.has(reserva.id_reserva)">
-                                        <div class="order-header" (click)="toggleOrden(reserva.id_reserva)">
-                                            <div class="order-basic-info">
-                                                <h4><i class="fas fa-chevron-right icon-rotate" [class.rotated]="ordenesExpandidas.has(reserva.id_reserva)"></i> Orden #{{ reserva.id_reserva }}</h4>
-                                                <p><i class="far fa-calendar-alt"></i> {{ reserva.fecha_reserva | date:'shortDate' }} | Total: <strong>S/ {{ reserva.total_pagado }}</strong></p>
-                                            </div>
-                                            <div class="order-status-badge" [ngClass]="'status-' + reserva.estado">
-                                                {{ reserva.estado === 'esperando_recojo' ? 'LISTO PARA RECOJO' : reserva.estado | uppercase }}
-                                            </div>
-                                        </div>
-                                        
-                                        @if (ordenesExpandidas.has(reserva.id_reserva)) {
-                                            <div class="order-details-body">
-                                                <hr class="glass-divider">
-                                                <div class="items-list">
-                                                    @for (item of reserva.detalles; track item.id_detalle) {
-                                                        <div class="order-item">
-                                                            <img [src]="getRutaImagen(item)">
-                                                            <div class="item-text">
-                                                                <h5>{{ item.nombre_comun }}</h5>
-                                                                @if(item.estilo_seleccionado !== 'Estándar' && item.estilo_seleccionado !== 'Principal') {
-                                                                    <small><i class="fas fa-palette"></i> {{ item.estilo_seleccionado }}</small>
-                                                                }
-                                                            </div>
-                                                            <div class="item-price">{{ item.cantidad }} x S/ {{ item.precio_unitario }}</div>
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <div class="order-footer-actions">
-                                                    <span class="comprobante-text"><i class="fas fa-file-invoice"></i> {{ reserva.tipo_comprobante | titlecase }}</span>
-                                                    
-                                                    @if (reserva.estado !== 'pendiente' && reserva.estado !== 'cancelado') {
-                                                        <button class="btn-glass-pdf" (click)="abrirPDF(reserva.id_reserva)">
-                                                            <i class="fas fa-download"></i> Ver Recibo PDF
-                                                        </button>
-                                                    }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </section>
-                }
-
-                @if (tabActivo === 'cupones') {
-                    <section class="fade-in">
-                        <div class="flex-between mb-20" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
-                            <h2 class="section-title m-0" style="border: none; padding: 0;"><i class="fas fa-gift"></i> Tus Premios</h2>
-                            <button class="btn-glass-outline" (click)="irTienda()"><i class="fas fa-dharmachakra"></i> Ir a la Ruleta</button>
-                        </div>
-
-                        @if (cupones.length === 0) {
-                            <div class="empty-glass-state">
-                                <i class="fas fa-ticket-alt"></i>
-                                <p>No tienes premios disponibles.</p>
-                                <small>¡Adopta plantas para ganar o prueba suerte en la ruleta semanal!</small>
-                            </div>
-                        } @else {
-                            <div class="cupones-grid">
-                                @for (cupon of cupones; track cupon.codigo) {
-                                    <div class="glass-cupon-ticket" [ngClass]="esCuponDeCompra(cupon.codigo) ? 'cupon-compra' : 'cupon-ruleta'">
-                                        <div class="cupon-header">
-                                            <h3>{{ esCuponDeCompra(cupon.codigo) ? 'PREMIO DE LEALTAD' : 'PREMIO RULETA' }}</h3>
-                                            @if (cupon.descuento_porcentaje >= 25) { <div class="star-badge"><i class="fas fa-star"></i></div> }
-                                        </div>
-                                        <div class="cupon-codigo">{{ cupon.codigo }}</div>
-                                        <h2>{{ cupon.descuento_porcentaje }}% OFF</h2>
-                                        <p><i class="far fa-clock"></i> Válido hasta: {{ cupon.fecha_vencimiento | date:'dd/MM/yyyy' }}</p>
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </section>
-                }
-
-                @if (tabActivo === 'peligro') {
-                    <section class="fade-in">
-                        <h2 class="section-title text-danger" style="border-bottom-color: rgba(255, 107, 107, 0.3);"><i class="fas fa-skull-crossbones"></i> Zona Restringida</h2>
-                        <div class="glass-danger-zone">
-                            <h3>Eliminar mi cuenta permanentemente</h3>
-                            <p>Al eliminar tu cuenta perderás tu nivel actual (Nivel {{ usuario.datos_nivel?.nivel }}), tus cupones activos, tu progreso y el historial de órdenes de forma irreversible.</p>
-                            <button class="btn-glass-danger mt-15" (click)="eliminarCuenta()"><i class="fas fa-trash-alt"></i> Eliminar mi cuenta</button>
-                        </div>
-                    </section>
-                }
-            </main>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">
+              <p>Sigue comprando para desbloquear cupones de regalo.</p>
+            </div>
+          }
         </div>
-    }
+      }
+
+      @if(tab==='historial' && !cargando) {
+        <div class="fade-in">
+          <h3 class="section-title">Historial de Pedidos</h3>
+          <div class="history-list">
+            @for(h of historial; track h.id_reserva) {
+              <div class="history-item">
+                <div class="hist-info">
+                  <h4>Orden #{{ h.id_reserva }}</h4>
+                  <p>{{ h.fecha_reserva | date:'dd de MMMM, yyyy' }}</p>
+                </div>
+                <div class="hist-status">
+                  <span class="badge" [class.bg-warning]="h.estado==='pendiente'">{{ h.estado }}</span>
+                </div>
+                <div class="hist-total">
+                  S/ {{ h.total_pagado }}
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-state">Aún no tienes pedidos registrados.</div>
+            }
+          </div>
+        </div>
+      }
+
+      @if(tab==='ajustes' && !cargando) {
+        <div class="fade-in max-w-2xl mx-auto">
+          <h3 class="section-title text-center">Tus Datos Personales</h3>
+          <form (submit)="actualizarPerfil($event)" class="settings-form mt-6">
+            <div class="grid-2 gap-4 mb-4">
+              <div class="input-group">
+                <label>NOMBRE COMPLETO</label>
+                <input name="n" [(ngModel)]="editNombre" required>
+              </div>
+              <div class="input-group">
+                <label>CORREO ELECTRÓNICO</label>
+                <input name="e" type="email" [(ngModel)]="editEmail" required>
+              </div>
+              <div class="input-group">
+                <label>DNI / DOCUMENTO</label>
+                <input name="d" [(ngModel)]="editDni">
+              </div>
+              <div class="input-group">
+                <label>TELÉFONO / CELULAR</label>
+                <input name="t" [(ngModel)]="editTelefono">
+              </div>
+            </div>
+            
+            <div class="input-group mb-8">
+              <label>NUEVA CONTRASEÑA</label>
+              <input name="p" type="password" [(ngModel)]="editPass" placeholder="Dejar en blanco para mantener la actual">
+            </div>
+
+            <button type="submit" class="btn-save w-full" [disabled]="cargando">GUARDAR CAMBIOS</button>
+          </form>
+        </div>
+      }
+    </main>
+  </div>
 </div>
 
-@if (toastMsg) { <div class="toast-notification">{{ toastMsg }}</div> }
+@if(toastMsg) {
+  <div class="pro-toast fade-in">
+    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    {{ toastMsg }}
+  </div>
+}

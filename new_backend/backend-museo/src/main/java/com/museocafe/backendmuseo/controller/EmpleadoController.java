@@ -4,6 +4,7 @@ import com.museocafe.backendmuseo.model.Pedido;
 import com.museocafe.backendmuseo.model.Usuario;
 import com.museocafe.backendmuseo.repository.PedidoRepository;
 import com.museocafe.backendmuseo.repository.UsuarioRepository;
+import com.museocafe.backendmuseo.repository.ProductoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,10 +29,12 @@ public class EmpleadoController {
 
     private final PedidoRepository pedidoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ProductoRepository productoRepository;
 
-    public EmpleadoController(PedidoRepository pedidoRepository, UsuarioRepository usuarioRepository) {
+    public EmpleadoController(PedidoRepository pedidoRepository, UsuarioRepository usuarioRepository, ProductoRepository productoRepository) {
         this.pedidoRepository = pedidoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.productoRepository = productoRepository;
     }
 
     @GetMapping("/dashboard/{idEmpleado}")
@@ -48,6 +51,7 @@ public class EmpleadoController {
         respuesta.put("ordenesActivas", ordenesActivas);
         respuesta.put("historial", historial);
         respuesta.put("totalAtendidas", historial.size());
+        respuesta.put("inventario", productoRepository.findAll());
 
         return ResponseEntity.ok(respuesta);
     }

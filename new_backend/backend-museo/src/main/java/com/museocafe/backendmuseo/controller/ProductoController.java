@@ -58,9 +58,8 @@ public class ProductoController {
     @DeleteMapping("/categorias/eliminar/{id}")
     public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) {
         
-        // Validación de integridad para evitar romper el catálogo
-        boolean enUso = productoRepository.findAll().stream()
-                .anyMatch(p -> p.getCategoria() != null && ((Categoria) p.getCategoria()).getIdCategoria().equals(id));
+        // Validación de integridad temporalmente desactivada porque Producto no tiene relación directa con Categoria en la BD
+        boolean enUso = false;
 
         if (enUso) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "mensaje", "No se puede eliminar. Hay productos usando esta categoría."));

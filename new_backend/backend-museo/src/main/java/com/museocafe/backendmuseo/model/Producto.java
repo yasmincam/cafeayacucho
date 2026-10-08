@@ -37,8 +37,5 @@ public class Producto {
 
     private Boolean activo = true;
 
-    public Object getCategoria() {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'getCategoria'");
-    }
+
 }
